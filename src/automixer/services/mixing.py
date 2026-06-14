@@ -142,6 +142,7 @@ class MixingService(BaseService):
 
     @autoregister
     def on_slide_change(self, event: SlideChangeEvent):
+        self.reset_state()
         self.bus.dispatch(MixingResultEvent(scene_type=SceneType.SLIDE))
 
     @autoregister
@@ -168,10 +169,13 @@ class MixingService(BaseService):
     @autoregister
     def on_program_change(self, event: ProgramChangeEvent):
         if event.scene_type is SceneType.CAMERA:
-            self.slide_text = None
-            self.transcription = None
-            self.score_sequence = []
-            self._threshold_crossed_at = None
+            self.reset_state()
+
+    def reset_state(self):
+        self.slide_text = None
+        self.transcription = None
+        self.score_sequence = []
+        self._threshold_crossed_at = None
 
     def calculate_slide2cam_score(self):
         if not self.slide_text or not self.transcription:
